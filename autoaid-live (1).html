@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoAid — Help is closer than you think</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1A1F36;
+    --navy-deep: #0F1224;
+    --navy-card: #1E2340;
+    --navy-surface: #252B47;
+    --orange: #E8490A;
+    --orange-dark: #C93D08;
+    --orange-glow: rgba(232,73,10,0.12);
+    --w65: rgba(255,255,255,0.65);
+    --w45: rgba(255,255,255,0.45);
+    --w25: rgba(255,255,255,0.25);
+    --w10: rgba(255,255,255,0.10);
+    --w06: rgba(255,255,255,0.06);
+    --off: #F2F3F7;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--navy-deep); color: #fff; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; background: rgba(15,18,36,0.92); backdrop-filter: blur(24px); border-bottom: 1px solid var(--w06); }
+  .nav-logo { display: flex; align-items: center; gap: 11px; cursor: pointer; }
+  .nav-mark { width: 34px; height: 34px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; font-style: italic; color: #fff; letter-spacing: -1px; flex-shrink: 0; }
+  .nav-name { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-link { font-size: 14px; color: var(--w45); background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: color 0.2s; padding: 0; }
+  .nav-link:hover { color: #fff; }
+  .nav-cta { background: var(--orange); color: #fff; font-size: 14px; font-weight: 700; padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero { min-height: 100vh; background: var(--navy); display: flex; align-items: center; padding: 100px 48px 80px; position: relative; overflow: hidden; }
+  .hero-orb { position: absolute; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(232,73,10,0.07) 0%, transparent 65%); top: -200px; right: -150px; pointer-events: none; }
+  .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; position: relative; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.2); padding: 6px 14px; border-radius: 100px; margin-bottom: 28px; }
+  .hero-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero-h1 { font-size: clamp(40px, 5vw, 68px); font-weight: 800; letter-spacing: -2.5px; line-height: 1.03; color: #fff; margin-bottom: 24px; }
+  .hero-h1 em { color: var(--orange); font-style: normal; }
+  .hero-sub { font-size: 17px; color: var(--w65); line-height: 1.75; max-width: 420px; }
+
+  /* SERVICE SELECTOR */
+  .selector-card { background: var(--navy-card); border: 1px solid var(--w10); border-radius: 20px; padding: 32px; position: relative; }
+  .selector-card::before { content: ''; position: absolute; top: 0; left: 32px; right: 32px; height: 2px; background: var(--orange); border-radius: 0 0 2px 2px; }
+  .selector-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--w45); margin-bottom: 16px; }
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .svc-btn { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--w10); background: var(--navy-surface); cursor: pointer; color: var(--w65); font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+  .svc-btn:hover { border-color: rgba(232,73,10,0.3); color: #fff; }
+  .svc-btn.selected { border-color: var(--orange); background: var(--orange-glow); color: #fff; }
+  .svc-icon { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .car-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .sel { width: 100%; background: var(--navy-surface); border: 1px solid var(--w10); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; transition: border-color 0.15s; }
+  .sel:focus { border-color: var(--orange); }
+  .sel option { background: var(--navy); }
+  .find-btn { width: 100%; background: var(--orange); color: #fff; font-size: 15px; font-weight: 700; padding: 15px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s, transform 0.1s; }
+  .find-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+  /* STATS */
+  .stats-bar { background: var(--navy-deep); border-top: 1px solid var(--w06); border-bottom: 1px solid var(--w06); padding: 24px 48px; }
+  .stats-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+  .stat { display: flex; align-items: center; gap: 14px; }
+  .stat-icon { width: 38px; height: 38px; border-radius: 9px; background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-num { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1; }
+  .stat-lbl { font-size: 12px; color: var(--w45); margin-top: 3px; }
+
+  /* SECTIONS */
+  .section { padding: 88px 48px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
+  .sh2 { font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.08; color: #fff; margin-bottom: 16px; }
+  .sh2-dark { font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.08; color: var(--navy); margin-bottom: 16px; }
+  .ssub { font-size: 16px; color: var(--w65); line-height: 1.75; max-width: 480px; }
+  .ssub-dark { font-size: 16px; color: #5A6070; line-height: 1.75; max-width: 480px; }
+
+  /* PROVIDERS */
+  .providers-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .f-btn { font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 100px; border: 1px solid var(--w10); background: transparent; color: var(--w45); cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+  .f-btn:hover { border-color: var(--w25); color: #fff; }
+  .f-btn.fa { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .pcard { background: var(--navy-card); border: 1px solid var(--w06); border-radius: 16px; padding: 26px; transition: all 0.2s; position: relative; overflow: hidden; }
+  .pcard::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--orange); transform: scaleX(0); transform-origin: left; transition: transform 0.25s; }
+  .pcard:hover { border-color: rgba(232,73,10,0.2); transform: translateY(-3px); }
+  .pcard:hover::after { transform: scaleX(1); }
+  .pc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .pc-av { width: 48px; height: 48px; border-radius: 11px; background: var(--navy-surface); display: flex; align-items: center; justify-content: center; }
+  .pc-badge { font-size: 11px; font-weight: 700; color: var(--orange); background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.2); padding: 4px 10px; border-radius: 6px; }
+  .pc-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; letter-spacing: -0.2px; }
+  .pc-type { font-size: 13px; color: var(--w45); margin-bottom: 14px; }
+  .pc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .pc-tag { font-size: 12px; color: var(--w65); background: var(--w06); padding: 4px 10px; border-radius: 6px; }
+  .pc-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--w06); margin-bottom: 14px; }
+  .pc-rating { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 600; color: #fff; }
+  .pc-star { color: #F5A623; font-size: 13px; }
+  .pc-rev { font-size: 12px; color: var(--w45); font-weight: 400; }
+  .pc-suburb { font-size: 13px; color: var(--w45); }
+  .pc-book { width: 100%; background: var(--orange); color: #fff; font-size: 14px; font-weight: 700; padding: 12px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+  .pc-book:hover { background: var(--orange-dark); }
+  .no-res { grid-column: 1/-1; text-align: center; padding: 56px 20px; color: var(--w45); font-size: 15px; }
+
+  /* HOW IT WORKS */
+  .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 52px; }
+  .step { background: var(--navy-card); padding: 32px 26px; position: relative; overflow: hidden; }
+  .step:first-child { border-radius: 16px 0 0 16px; }
+  .step:last-child { border-radius: 0 16px 16px 0; }
+  .step-n { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); margin-bottom: 18px; }
+  .step-ico { width: 46px; height: 46px; border-radius: 12px; background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .step-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .step-desc { font-size: 14px; color: var(--w45); line-height: 1.65; }
+
+  /* WHY */
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin-top: 52px; }
+  .why-card { background: #fff; border-radius: 16px; padding: 30px 26px; border: 1px solid #EAECF2; transition: transform 0.2s; }
+  .why-card:hover { transform: translateY(-4px); }
+  .why-ico { width: 46px; height: 46px; border-radius: 12px; background: #FFF0EB; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .why-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .why-desc { font-size: 14px; color: #6B7280; line-height: 1.65; }
+
+  /* CTA */
+  .cta-band { background: var(--orange); padding: 72px 48px; text-align: center; }
+  .cta-inner { max-width: 520px; margin: 0 auto; }
+  .cta-h2 { font-size: clamp(26px, 4vw, 42px); font-weight: 800; color: #fff; letter-spacing: -1.5px; margin-bottom: 14px; }
+  .cta-sub { font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.65; margin-bottom: 32px; }
+  .cta-btn { background: #fff; color: var(--orange); font-size: 16px; font-weight: 800; padding: 15px 36px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: transform 0.15s; }
+  .cta-btn:hover { transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer { background: var(--navy-deep); padding: 60px 48px 36px; border-top: 1px solid var(--w06); }
+  .footer-inner { max-width: 1100px; margin: 0 auto; }
+  .footer-top { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 44px; flex-wrap: wrap; }
+  .footer-desc { font-size: 13px; color: var(--w25); margin-top: 12px; max-width: 200px; line-height: 1.6; }
+  .footer-col h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--w45); margin-bottom: 14px; }
+  .footer-col a { display: block; font-size: 14px; color: var(--w45); text-decoration: none; margin-bottom: 9px; transition: color 0.15s; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; text-align: left; padding: 0; }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom { border-top: 1px solid var(--w06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .footer-copy { font-size: 13px; color: var(--w25); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ONBOARD */
+  .ob-hero { background: var(--navy); padding: 130px 48px 88px; position: relative; overflow: hidden; }
+  .ob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; max-width: 1100px; margin: 0 auto; }
+  .perks { margin-top: 40px; display: flex; flex-direction: column; gap: 18px; }
+  .perk { display: flex; align-items: flex-start; gap: 14px; }
+  .perk-ico { width: 38px; height: 38px; border-radius: 9px; background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .perk-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .perk-desc { font-size: 14px; color: var(--w45); line-height: 1.6; }
+  .ob-form { background: var(--navy-card); border: 1px solid var(--w10); border-radius: 20px; padding: 36px; }
+  .ob-form-title { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .ob-form-sub { font-size: 14px; color: var(--w45); margin-bottom: 24px; }
+  .fg { margin-bottom: 16px; }
+  .fl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--w45); margin-bottom: 7px; display: block; }
+  .fi { width: 100%; background: var(--navy-surface); border: 1px solid var(--w10); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.15s; }
+  .fi:focus { border-color: var(--orange); }
+  .fi::placeholder { color: var(--w25); }
+  .fi-select { width: 100%; background: var(--navy-surface); border: 1px solid var(--w10); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; transition: border-color 0.15s; }
+  .fi-select:focus { border-color: var(--orange); }
+  .fi-select option { background: var(--navy); }
+  .fi-ta { width: 100%; background: var(--navy-surface); border: 1px solid var(--w10); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.15s; }
+  .fi-ta:focus { border-color: var(--orange); }
+  .fi-ta::placeholder { color: var(--w25); }
+  .f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sub-btn { width: 100%; background: var(--orange); color: #fff; font-size: 15px; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; margin-top: 8px; }
+  .sub-btn:hover { background: var(--orange-dark); }
+  .form-note { font-size: 12px; color: var(--w25); text-align: center; margin-top: 10px; }
+
+  /* SUCCESS */
+  .ob-success { display: none; text-align: center; padding: 32px 0; }
+  .ob-success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--orange-glow); border: 2px solid rgba(232,73,10,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+  .ob-success-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 10px; }
+  .ob-success-sub { font-size: 15px; color: var(--w65); line-height: 1.65; margin-bottom: 24px; }
+
+  /* BOOKING MODAL */
+  .mo { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(8,10,22,0.88); backdrop-filter: blur(12px); align-items: center; justify-content: center; padding: 20px; }
+  .mo.open { display: flex; }
+  .mo-box { background: var(--navy); border: 1px solid var(--w10); border-radius: 20px; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; animation: moin 0.22s ease; }
+  @keyframes moin { from{opacity:0;transform:translateY(12px) scale(0.98)} to{opacity:1;transform:none} }
+  .mo-hd { padding: 26px 26px 20px; border-bottom: 1px solid var(--w06); display: flex; justify-content: space-between; align-items: flex-start; }
+  .mo-title { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .mo-sub { font-size: 13px; color: var(--w45); margin-top: 4px; }
+  .mo-close { width: 32px; height: 32px; border-radius: 8px; background: var(--w06); border: none; color: var(--w65); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .mo-close:hover { background: var(--w10); }
+  .mo-body { padding: 22px 26px; }
+  .mo-prow { display: flex; align-items: center; gap: 12px; background: var(--navy-card); border-radius: 12px; padding: 14px; margin-bottom: 22px; }
+  .mo-pav { width: 42px; height: 42px; border-radius: 10px; background: var(--navy-surface); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .mo-pname { font-size: 15px; font-weight: 700; color: #fff; }
+  .mo-ptype { font-size: 13px; color: var(--w45); }
+  .mo-notice { background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.2); border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px; color: var(--w65); line-height: 1.6; }
+  .mo-notice strong { color: #fff; }
+  .mo-ft { padding: 0 26px 26px; }
+  .mo-submit { width: 100%; background: var(--orange); color: #fff; font-size: 15px; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+  .mo-submit:hover { background: var(--orange-dark); }
+  .mo-note { font-size: 12px; color: var(--w25); text-align: center; margin-top: 10px; }
+
+  /* SUCCESS MODAL */
+  .mo-success { display: none; padding: 44px 26px; text-align: center; }
+  .mo-success.show { display: block; }
+  .ms-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--orange-glow); border: 2px solid rgba(232,73,10,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+  .ms-title { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 10px; }
+  .ms-sub { font-size: 15px; color: var(--w65); line-height: 1.65; margin-bottom: 24px; }
+  .ms-detail { background: var(--navy-card); border-radius: 12px; padding: 18px; text-align: left; margin-bottom: 22px; }
+  .ms-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--w06); font-size: 14px; }
+  .ms-row:last-child { border-bottom: none; }
+  .ms-lbl { color: var(--w45); }
+  .ms-val { color: #fff; font-weight: 600; }
+  .ms-alert { background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.2); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--w65); line-height: 1.6; margin-bottom: 20px; }
+  .ms-alert strong { color: #fff; }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 64px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .stats-bar { padding: 20px; }
+    .section { padding: 60px 20px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .step:first-child { border-radius: 16px 0 0 0; }
+    .step:nth-child(2) { border-radius: 0 16px 0 0; }
+    .step:nth-child(3) { border-radius: 0 0 0 16px; }
+    .step:last-child { border-radius: 0 0 16px 0; }
+    .ob-grid { grid-template-columns: 1fr; gap: 36px; }
+    .ob-hero { padding: 100px 20px 64px; }
+    .f2 { grid-template-columns: 1fr; }
+    footer { padding: 48px 20px 32px; }
+    .footer-top { flex-direction: column; gap: 28px; }
+    .cta-band { padding: 60px 20px; }
+  }
+  @media (max-width: 600px) {
+    .service-grid { grid-template-columns: 1fr 1fr; }
+    .car-row { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .step { border-radius: 0 !important; }
+    .step:first-child { border-radius: 16px 16px 0 0 !important; }
+    .step:last-child { border-radius: 0 0 16px 16px !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-mark">AA</div>
+    <span class="nav-name">AutoAid</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showPage('home'); goto('how-it-works')">How it works</button>
+    <button class="nav-link" onclick="showPage('home'); goto('providers-section')">Providers</button>
+    <button class="nav-link" onclick="showPage('join')">Join as provider</button>
+  </div>
+  <button class="nav-cta" onclick="showPage('home'); goto('providers-section')">Get help now</button>
+</nav>
+
+<!-- ══ HOME ══ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb"></div>
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge"><div class="hero-dot"></div> Western Sydney</div>
+          <h1 class="hero-h1">Help is closer<br>than <em>you think.</em></h1>
+          <p class="hero-sub">Find a trusted local provider for towing, battery, tyres, or detailing. Browse, choose, and book in under two minutes.</p>
+        </div>
+
+        <!-- SELECTOR -->
+        <div class="selector-card">
+          <div class="selector-label">What do you need?</div>
+          <div class="service-grid">
+            <button class="svc-btn" onclick="selectSvc('towing',this)">
+              <span class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+              Towing
+            </button>
+            <button class="svc-btn" onclick="selectSvc('battery',this)">
+              <span class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>
+              Battery
+            </button>
+            <button class="svc-btn" onclick="selectSvc('tyres',this)">
+              <span class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></span>
+              Tyres
+            </button>
+            <button class="svc-btn" onclick="selectSvc('detailing',this)">
+              <span class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+              Detailing
+            </button>
+          </div>
+          <div class="selector-label" style="margin-top:4px;">About your car</div>
+          <div class="car-row">
+            <select class="sel" id="car-make">
+              <option value="">Car make</option>
+              <option>Toyota</option><option>Ford</option><option>Holden</option><option>Mazda</option><option>Hyundai</option><option>Kia</option><option>Mitsubishi</option><option>Nissan</option><option>Honda</option><option>Volkswagen</option><option>BMW</option><option>Mercedes</option><option>Audi</option><option>Subaru</option><option>Suzuki</option><option>Isuzu</option><option>Jeep</option><option>Lexus</option><option>Other</option>
+            </select>
+            <select class="sel" id="car-year">
+              <option value="">Year range</option>
+              <option>2020 or newer</option><option>2015 - 2019</option><option>2010 - 2014</option><option>2005 - 2009</option><option>2000 - 2004</option><option>Before 2000</option>
+            </select>
+          </div>
+          <button class="find-btn" onclick="findProviders()">
+            Show me providers
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="stat-num">4</div><div class="stat-lbl">Services covered</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div><div class="stat-num">Western Sydney</div><div class="stat-lbl">Coverage area</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div><div class="stat-num">No subscription</div><div class="stat-lbl">Pay only when you need it</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div><div class="stat-num">10 min</div><div class="stat-lbl">Avg. provider response</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROVIDERS -->
+  <section class="section" style="background:var(--navy-deep);" id="providers-section">
+    <div class="section-inner">
+      <div class="providers-top">
+        <div>
+          <div class="eyebrow">Local providers</div>
+          <h2 class="sh2" style="margin-bottom:0;" id="ph">All providers</h2>
+        </div>
+        <div class="filter-row">
+          <button class="f-btn fa" onclick="filterP('all',this)">All</button>
+          <button class="f-btn" onclick="filterP('towing',this)">Towing</button>
+          <button class="f-btn" onclick="filterP('battery',this)">Battery</button>
+          <button class="f-btn" onclick="filterP('tyres',this)">Tyres</button>
+          <button class="f-btn" onclick="filterP('detailing',this)">Detailing</button>
+        </div>
+      </div>
+      <div class="pgrid" id="pgrid"></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" style="background:var(--navy);" id="how-it-works">
+    <div class="section-inner">
+      <div class="eyebrow">Simple process</div>
+      <h2 class="sh2">How AutoAid works</h2>
+      <p class="ssub">No subscriptions, no hold music. Find your provider and book directly in minutes.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">Step 01</div>
+          <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <div class="step-title">Select your service</div>
+          <div class="step-desc">Choose what you need and tell us about your car. Takes under 30 seconds.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">Step 02</div>
+          <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="step-title">Choose your provider</div>
+          <div class="step-desc">Browse local providers, check ratings and services, pick the right one for you.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">Step 03</div>
+          <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="step-title">Book directly</div>
+          <div class="step-desc">Fill in your details and submit. Both you and your provider get an instant confirmation.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">Step 04</div>
+          <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="step-title">Provider arrives</div>
+          <div class="step-desc">Your local provider shows up and gets the job done. You pay them directly.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="section" style="background:var(--off);">
+    <div class="section-inner">
+      <div class="eyebrow">Why AutoAid</div>
+      <h2 class="sh2-dark">A better way to get car help</h2>
+      <p class="ssub-dark">Getting help for your car should not feel like calling a government department.</p>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="why-title">No subscription</div>
+          <div class="why-desc">Pay only when you need help. No annual fees, no membership required.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div class="why-title">Locally grounded</div>
+          <div class="why-desc">Western Sydney is home turf. Your providers are your neighbours, not a national call centre.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="why-title">Direct booking</div>
+          <div class="why-desc">Book your provider directly. No middleman on every transaction. Full transparency.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          <div class="why-title">More than roadside</div>
+          <div class="why-desc">Towing, battery, tyres, and detailing. Everything your car needs, not just emergencies.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <div class="cta-inner">
+      <h2 class="cta-h2">Your car. Handled.</h2>
+      <p class="cta-sub">Browse local providers in Western Sydney and book the help you need today.</p>
+      <button class="cta-btn" onclick="goto('providers-section')">Find a provider</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="nav-logo" style="cursor:default;">
+            <div class="nav-mark">AA</div>
+            <span class="nav-name">AutoAid</span>
+          </div>
+          <div class="footer-desc">Help is closer than you think. Western Sydney's on-demand vehicle assistance platform.</div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <a onclick="filterP('towing'); goto('providers-section')">Towing</a>
+          <a onclick="filterP('battery'); goto('providers-section')">Battery replacement</a>
+          <a onclick="filterP('tyres'); goto('providers-section')">Tyre services</a>
+          <a onclick="filterP('detailing'); goto('providers-section')">Mobile detailing</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a onclick="goto('how-it-works')">How it works</a>
+          <a onclick="showPage('join')">Join as provider</a>
+          <a>Contact us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Coverage</h4>
+          <a>Parramatta</a><a>Penrith</a><a>Blacktown</a><a>Liverpool</a><a>Campbelltown</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 AutoAid. All rights reserved.</div>
+        <div class="footer-copy">Western Sydney, NSW</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ══ JOIN PAGE ══ -->
+<div id="page-join" class="page">
+  <section class="ob-hero">
+    <div class="hero-orb"></div>
+    <div class="ob-grid">
+      <div>
+        <div class="hero-badge" style="margin-bottom:24px;"><div class="hero-dot"></div> For providers</div>
+        <h1 class="hero-h1">Join the<br><em>network.</em></h1>
+        <p class="hero-sub" style="margin-bottom:0;">Get listed on AutoAid and receive direct bookings from customers in Western Sydney. Free to join, no lock-in.</p>
+        <div class="perks">
+          <div class="perk">
+            <div class="perk-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div><div class="perk-title">Free to join</div><div class="perk-desc">No joining fees, no monthly costs. We take a small cut only when the platform matures.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div><div class="perk-title">Direct bookings</div><div class="perk-desc">Customers book you directly. You get their details instantly by email so you can call them straight away.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="perk-title">Build your reputation</div><div class="perk-desc">Get reviews from every job and grow your profile on the AutoAid platform.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div class="perk-title">You stay in control</div><div class="perk-desc">Accept or decline any booking. Set your own availability. No jobs outside your area.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="ob-form">
+        <div class="ob-form-title">List your business</div>
+        <div class="ob-form-sub">Takes 2 minutes. We will call you within 24 hours.</div>
+        <div id="ob-form-fields">
+          <div class="fg"><label class="fl">Full name</label><input class="fi" type="text" placeholder="Your name" id="p-name"></div>
+          <div class="fg"><label class="fl">Business name</label><input class="fi" type="text" placeholder="Your business name" id="p-biz"></div>
+          <div class="f2">
+            <div class="fg"><label class="fl">Phone</label><input class="fi" type="tel" placeholder="04XX XXX XXX" id="p-phone"></div>
+            <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="you@email.com" id="p-email"></div>
+          </div>
+          <div class="fg">
+            <label class="fl">Primary service</label>
+            <select class="fi-select" id="p-service">
+              <option value="">Select service</option>
+              <option>Towing</option><option>Battery replacement</option><option>Tyre services</option><option>Mobile detailing</option><option>Multiple services</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Suburbs you cover</label><input class="fi" type="text" placeholder="e.g. Parramatta, Penrith, Blacktown" id="p-suburbs"></div>
+          <div class="fg"><label class="fl">Years of experience</label><input class="fi" type="text" placeholder="e.g. 8 years" id="p-exp"></div>
+          <div class="fg"><label class="fl">Anything else?</label><textarea class="fi-ta" placeholder="Certifications, equipment, specialties..." id="p-notes"></textarea></div>
+          <button class="sub-btn" onclick="submitProvider()">Apply to join</button>
+          <div class="form-note">We review every application and call within 24 hours.</div>
+        </div>
+        <div class="ob-success" id="ob-success">
+          <div class="ob-success-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="ob-success-title">Application received.</div>
+          <div class="ob-success-sub">We will call you within 24 hours to get you set up on the platform. Welcome to AutoAid.</div>
+          <button class="sub-btn" onclick="showPage('home')">Back to home</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <div class="cta-inner">
+      <h2 class="cta-h2">Need help yourself?</h2>
+      <p class="cta-sub">Browse local providers and book the help you need today.</p>
+      <button class="cta-btn" onclick="showPage('home'); goto('providers-section')">Find a provider</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="nav-logo" onclick="showPage('home')" style="cursor:pointer;">
+            <div class="nav-mark">AA</div>
+            <span class="nav-name">AutoAid</span>
+          </div>
+          <div class="footer-desc">Help is closer than you think.</div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <a onclick="showPage('home'); filterP('towing')">Towing</a>
+          <a onclick="showPage('home'); filterP('battery')">Battery</a>
+          <a onclick="showPage('home'); filterP('tyres')">Tyres</a>
+          <a onclick="showPage('home'); filterP('detailing')">Detailing</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a onclick="showPage('home'); goto('how-it-works')">How it works</a>
+          <a onclick="showPage('join')">Join as provider</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 AutoAid. All rights reserved.</div>
+        <div class="footer-copy">Western Sydney, NSW</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="mo" id="mo" onclick="closeMoOutside(event)">
+  <div class="mo-box">
+    <div id="mo-form">
+      <div class="mo-hd">
+        <div>
+          <div class="mo-title">Book a service</div>
+          <div class="mo-sub" id="mo-sub">Fill in your details below</div>
+        </div>
+        <button class="mo-close" onclick="closeMo()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="mo-body">
+        <div class="mo-prow">
+          <div class="mo-pav" id="mo-av"></div>
+          <div>
+            <div class="mo-pname" id="mo-pname"></div>
+            <div class="mo-ptype" id="mo-ptype"></div>
+          </div>
+        </div>
+        <div class="mo-notice"><strong>How it works:</strong> Submit your details below. Both you and your provider will receive an instant email confirmation with each other's contact details so you can coordinate directly.</div>
+        <div class="fg"><label class="fl">Your name</label><input class="fi" type="text" placeholder="Full name" id="b-name"></div>
+        <div class="f2">
+          <div class="fg"><label class="fl">Phone number</label><input class="fi" type="tel" placeholder="04XX XXX XXX" id="b-phone"></div>
+          <div class="fg"><label class="fl">Address / suburb</label><input class="fi" type="text" placeholder="Where are you?" id="b-address"></div>
+        </div>
+        <div class="fg">
+          <label class="fl">Service needed</label>
+          <select class="fi-select" id="b-service">
+            <option value="">Select service</option>
+            <option>Towing</option><option>Battery replacement</option><option>Tyre repair / replacement</option><option>Mobile detailing</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">When do you need help?</label>
+          <select class="fi-select" id="b-timing">
+            <option>As soon as possible</option><option>Within the next few hours</option><option>Today</option><option>Tomorrow</option><option>I am planning ahead</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Tell us more (optional)</label><textarea class="fi-ta" placeholder="Car make, model, specific issue..." id="b-notes"></textarea></div>
+      </div>
+      <div class="mo-ft">
+        <button class="mo-submit" onclick="submitBooking()">Confirm booking request</button>
+        <div class="mo-note">You and your provider will both receive an instant email confirmation.</div>
+      </div>
+    </div>
+    <div class="mo-success" id="mo-success">
+      <div class="ms-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="ms-title">Booking confirmed.</div>
+      <div class="ms-sub">Both you and your provider have been sent an email with each other's contact details. Expect a call shortly.</div>
+      <div class="ms-detail" id="b-summary"></div>
+      <div class="ms-alert"><strong>Important:</strong> If your provider has not reached out within 30 minutes, call us on <strong>1800 AUTOAID</strong> and we will sort it out immediately.</div>
+      <button class="mo-submit" onclick="closeMo()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── PROVIDER DATA FROM GOOGLE SHEETS ──
+  var providers = [];
+  var SHEET_URL = 'providers.csv';
+
+  function splitLine(line) {
+    var vals=[],cur='',inQ=false;
+    for(var c=0;c<line.length;c++){
+      if(line[c]==='"'){inQ=!inQ;}
+      else if(line[c]===','&&!inQ){vals.push(cur.trim().replace(/"/g,''));cur='';}
+      else{cur+=line[c];}
+    }
+    vals.push(cur.trim().replace(/"/g,''));
+    return vals;
+  }
+  function parseCSV(text) {
+    var lines=text.trim().split('\n');
+    var headerIdx=0;
+    for(var i=0;i<lines.length;i++){if(lines[i].indexOf('Business Name')>-1){headerIdx=i;break;}}
+    var headers=splitLine(lines[headerIdx]);
+    return lines.slice(headerIdx+1).map(function(line){
+      if(!line.trim())return null;
+      var vals=splitLine(line);
+      var obj={};
+      headers.forEach(function(h,idx){obj[h]=(vals[idx]||'').trim();});
+      return obj;
+    }).filter(function(r){return r!==null;});
+  }
+
+  function buildProviders(rows) {
+    var result = [];
+    rows.forEach(function(r, i) {
+      if (!r['Business Name'] || r['Active'] === 'No') return;
+      var cats = [];
+      if (r['Towing'] === 'Yes') cats.push('towing');
+      if (r['Battery'] === 'Yes') cats.push('battery');
+      if (r['Tyre'] === 'Yes') cats.push('tyres');
+      if (r['Car Wash'] === 'Yes') cats.push('detailing');
+      if (cats.length === 0) return;
+      var tags = cats.map(function(c){ return c.charAt(0).toUpperCase()+c.slice(1); });
+      if (r['Suburb']) tags.push(r['Suburb']);
+      result.push({
+        id: i + 1,
+        name: r['Business Name'],
+        type: cats.map(function(c){ return c.charAt(0).toUpperCase()+c.slice(1); }).join(' & ') + ' specialist',
+        cats: cats,
+        cat: cats[0],
+        suburb: r['Suburb'] || '',
+        rating: r['Rating'] || '5.0',
+        reviews: parseInt(r['Reviews']) || 0,
+        tags: tags,
+        badge: r['Badge'] || ''
+      });
+    });
+    return result;
+  }
+
+  function loadProviders() {
+    var grid = document.getElementById('pgrid');
+    if (grid) grid.innerHTML = '<p style="color:rgba(255,255,255,0.4);text-align:center;padding:40px;">Loading providers...</p>';
+    fetch(SHEET_URL)
+      .then(function(r){ return r.text(); })
+      .then(function(text){
+        var rows = parseCSV(text);
+        providers = buildProviders(rows);
+        renderProviders('all');
+      })
+      .catch(function(){
+        if (grid) grid.innerHTML = '<p style="color:rgba(255,255,255,0.4);text-align:center;padding:40px;">Unable to load providers. Please try again shortly.</p>';
+      });
+  }
+
+  var catIcons = {
+    towing: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+    battery: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>',
+    tyres: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>',
+    detailing: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+  };
+
+  var currentProvider = null;
+  var selectedSvc = null;
+
+  function renderProviders(filter) {
+    var grid = document.getElementById('pgrid');
+    var list = filter === 'all' ? providers : providers.filter(function(p){ return p.cats && p.cats.indexOf(filter) > -1; });
+    if (!list.length) {
+      grid.innerHTML = '<div class="no-res">No providers listed for this service yet. More coming soon.</div>';
+      return;
+    }
+    grid.innerHTML = list.map(function(p){
+      return '<div class="pcard">' +
+        '<div class="pc-top"><div class="pc-av">' + (catIcons[p.cat]||'') + '</div>' + (p.badge ? '<div class="pc-badge">' + p.badge + '</div>' : '<div></div>') + '</div>' +
+        '<div class="pc-name">' + p.name + '</div>' +
+        '<div class="pc-type">' + p.type + '</div>' +
+        '<div class="pc-tags">' + p.tags.map(function(t){ return '<span class="pc-tag">' + t + '</span>'; }).join('') + '</div>' +
+        '<div class="pc-meta"><div class="pc-rating"><span class="pc-star">★</span> ' + p.rating + ' <span class="pc-rev">(' + p.reviews + ' reviews)</span></div><div class="pc-suburb">📍 ' + p.suburb + '</div></div>' +
+        '<button class="pc-book" onclick="openMo(' + p.id + ')">Book now</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  function filterP(cat, btn) {
+    renderProviders(cat);
+    document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('fa'); });
+    if (btn) { btn.classList.add('fa'); }
+    else {
+      document.querySelectorAll('.f-btn').forEach(function(b){
+        if ((cat==='all' && b.textContent.trim()==='All') || b.textContent.trim().toLowerCase()===cat) b.classList.add('fa');
+      });
+    }
+    var labels = {all:'All providers',towing:'Towing providers',battery:'Battery providers',tyres:'Tyre providers',detailing:'Detailing providers'};
+    var h = document.getElementById('ph');
+    if (h) h.textContent = labels[cat] || 'All providers';
+  }
+
+  function selectSvc(cat, el) {
+    selectedSvc = cat;
+    document.querySelectorAll('.svc-btn').forEach(function(b){ b.classList.remove('selected'); });
+    el.classList.add('selected');
+  }
+
+  function findProviders() {
+    if (!selectedSvc) { alert('Please select a service first.'); return; }
+    filterP(selectedSvc);
+    setTimeout(function(){
+      var el = document.getElementById('providers-section');
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 100);
+  }
+
+  function openMo(id) {
+    currentProvider = providers.find(function(p){ return p.id === id; });
+    document.getElementById('mo-pname').textContent = currentProvider.name;
+    document.getElementById('mo-ptype').textContent = currentProvider.type;
+    document.getElementById('mo-sub').textContent = 'Booking with ' + currentProvider.name;
+    document.getElementById('mo-av').innerHTML = catIcons[currentProvider.cat] || '';
+    document.getElementById('mo-form').style.display = 'block';
+    document.getElementById('mo-success').classList.remove('show');
+    if (selectedSvc) {
+      var svcMap = {towing:'Towing', battery:'Battery replacement', tyres:'Tyre repair / replacement', detailing:'Mobile detailing'};
+      document.getElementById('b-service').value = svcMap[currentProvider.cat] || '';
+    }
+    document.getElementById('mo').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMo() {
+    document.getElementById('mo').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeMoOutside(e) {
+    if (e.target === document.getElementById('mo')) closeMo();
+  }
+
+  function submitBooking() {
+    var name = document.getElementById('b-name').value.trim();
+    var phone = document.getElementById('b-phone').value.trim();
+    var address = document.getElementById('b-address').value.trim();
+    var service = document.getElementById('b-service').value;
+    var timing = document.getElementById('b-timing').value;
+    if (!name || !phone || !address || !service) { alert('Please fill in your name, phone, address, and service.'); return; }
+
+    // REPLACE THIS URL WITH YOUR TALLY FORM URL WHEN READY
+    var tallyUrl = 'https://tally.so/r/YOURFORMID?provider=' + encodeURIComponent(currentProvider.name) + '&service=' + encodeURIComponent(service) + '&name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(address) + '&timing=' + encodeURIComponent(timing);
+
+    document.getElementById('b-summary').innerHTML =
+      '<div class="ms-row"><span class="ms-lbl">Provider</span><span class="ms-val">' + currentProvider.name + '</span></div>' +
+      '<div class="ms-row"><span class="ms-lbl">Service</span><span class="ms-val">' + service + '</span></div>' +
+      '<div class="ms-row"><span class="ms-lbl">Address</span><span class="ms-val">' + address + '</span></div>' +
+      '<div class="ms-row"><span class="ms-lbl">Timing</span><span class="ms-val">' + timing + '</span></div>' +
+      '<div class="ms-row"><span class="ms-lbl">Contact</span><span class="ms-val">' + phone + '</span></div>';
+    document.getElementById('mo-form').style.display = 'none';
+    document.getElementById('mo-success').classList.add('show');
+  }
+
+  function submitProvider() {
+    var name = document.getElementById('p-name').value.trim();
+    var biz = document.getElementById('p-biz').value.trim();
+    var phone = document.getElementById('p-phone').value.trim();
+    var service = document.getElementById('p-service').value;
+    if (!name || !biz || !phone || !service) { alert('Please fill in your name, business name, phone, and service type.'); return; }
+    document.getElementById('ob-form-fields').style.display = 'none';
+    document.getElementById('ob-success').style.display = 'block';
+  }
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('page-' + id).classList.add('active');
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  function goto(id) {
+    setTimeout(function(){
+      var el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 120);
+  }
+
+  // INIT
+  loadProviders();
+</script>
+</body>
+</html>
