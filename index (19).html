@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoAid — Help is on the way.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1A1F36;
+  --navy-deep: #0F1224;
+  --navy-card: #1E2340;
+  --navy-surface: #252B47;
+  --orange: #E8490A;
+  --orange-dark: #C93D08;
+  --orange-glow: rgba(232,73,10,0.12);
+  --orange-border: rgba(232,73,10,0.25);
+  --w65: rgba(255,255,255,0.65);
+  --w45: rgba(255,255,255,0.45);
+  --w25: rgba(255,255,255,0.25);
+  --w12: rgba(255,255,255,0.12);
+  --w08: rgba(255,255,255,0.08);
+  --w06: rgba(255,255,255,0.06);
+  --transition-fast: 0.15s cubic-bezier(0.16,1,0.3,1);
+  --transition-smooth: 0.25s cubic-bezier(0.16,1,0.3,1);
+  --transition-slow: 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--navy-deep);
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  background: rgba(15,18,36,0.0);
+  backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent;
+  transition: background var(--transition-smooth), backdrop-filter var(--transition-smooth), border-color var(--transition-smooth);
+  will-change: background;
+}
+nav.scrolled {
+  background: rgba(15,18,36,0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom-color: var(--w06);
+}
+.nav-logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+.nav-mark {
+  width: 34px; height: 34px;
+  background: var(--orange);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; font-style: italic; color: #fff; letter-spacing: -1px;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.nav-logo:hover .nav-mark { transform: scale(1.06); box-shadow: 0 4px 16px rgba(232,73,10,0.3); }
+.nav-name { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-link {
+  font-size: 14px; color: var(--w45);
+  background: none; border: none; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  padding: 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+.nav-link::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0; right: 0; height: 1px;
+  background: var(--orange);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--transition-smooth);
+}
+.nav-link:hover { color: #fff; }
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-cta {
+  background: var(--orange); color: #fff;
+  font-size: 14px; font-weight: 700;
+  padding: 10px 22px; border-radius: 8px; border: none;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  text-decoration: none; display: inline-block;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(232,73,10,0.2);
+}
+.nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,73,10,0.3); }
+.nav-cta:active { transform: scale(0.97); box-shadow: none; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex; align-items: center;
+  padding: 100px 48px 80px;
+  position: relative; overflow: hidden;
+}
+.hero-orb {
+  position: absolute; width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,73,10,0.07) 0%, transparent 65%);
+  top: -200px; right: -150px; pointer-events: none;
+  animation: orb-drift 12s ease-in-out infinite alternate;
+}
+@keyframes orb-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-30px, 20px) scale(1.05); }
+}
+.hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; position: relative; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--orange);
+  background: var(--orange-glow); border: 1px solid var(--orange-border);
+  padding: 6px 14px; border-radius: 100px;
+  margin-bottom: 28px;
+  opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+.hero-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.hero-h1 {
+  font-size: clamp(42px, 5.5vw, 72px); font-weight: 800;
+  letter-spacing: -2.5px; line-height: 1.02; color: #fff;
+  margin-bottom: 24px;
+  opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+.hero-sub {
+  font-size: 17px; color: var(--w65); line-height: 1.75;
+  max-width: 440px; margin-bottom: 36px;
+  opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+.hero-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange); color: #fff;
+  font-size: 15px; font-weight: 700; padding: 14px 28px;
+  border-radius: 10px; border: none; cursor: pointer;
+  font-family: 'Inter', sans-serif; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(232,73,10,0.25);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative; overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.12);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+.btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,73,10,0.35); }
+.btn-primary:hover::after { opacity: 1; }
+.btn-primary:active { transform: scale(0.97) translateY(0); box-shadow: 0 2px 8px rgba(232,73,10,0.2); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: #fff;
+  font-size: 15px; font-weight: 600; padding: 14px 28px;
+  border-radius: 10px; border: 1.5px solid var(--w25);
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+.btn-outline:hover { border-color: var(--w45); background: var(--w06); transform: translateY(-1px); }
+.btn-outline:active { transform: scale(0.97); }
+
+/* ── TRUST STRIP ── */
+.trust-strip {
+  background: var(--navy-deep);
+  border-top: 1px solid var(--w06); border-bottom: 1px solid var(--w06);
+  padding: 22px 48px;
+}
+.trust-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; justify-content: center; gap: clamp(2rem, 5vw, 4rem); flex-wrap: wrap;
+}
+.trust-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--w65); }
+.trust-ico {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--orange-glow); border: 1px solid var(--orange-border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.trust-item:hover .trust-ico { transform: scale(1.1); box-shadow: 0 2px 10px rgba(232,73,10,0.2); }
+
+/* ── SECTIONS ── */
+.section { padding: 88px 48px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
+.sh2 { font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.08; color: #fff; margin-bottom: 16px; }
+.ssub { font-size: 16px; color: var(--w65); line-height: 1.75; max-width: 480px; }
+
+/* ── FORM SYSTEM ── */
+.form-section { background: var(--navy); }
+.form-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-top: 52px; }
+.fg { margin-bottom: 18px; }
+.fl { font-size: 11px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--w45); margin-bottom: 8px; display: block; }
+.fl-opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+.fi {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid var(--w08);
+  border-radius: 12px;
+  padding: 15px 18px;
+  color: #fff; font-size: 16px; font-family: 'Inter', sans-serif;
+  outline: none;
+  -webkit-appearance: none; appearance: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.fi::placeholder { color: rgba(255,255,255,0.22); }
+.fi:hover { border-color: var(--w12); background: rgba(255,255,255,0.07); }
+.fi:focus { border-color: var(--orange); background: rgba(255,255,255,0.07); box-shadow: 0 0 0 3px rgba(232,73,10,0.12); }
+
+.fi-ta {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid var(--w08);
+  border-radius: 12px;
+  padding: 15px 18px;
+  color: #fff; font-size: 16px; font-family: 'Inter', sans-serif;
+  outline: none; resize: vertical; min-height: 88px;
+  -webkit-appearance: none; appearance: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.fi-ta::placeholder { color: rgba(255,255,255,0.22); }
+.fi-ta:hover { border-color: var(--w12); background: rgba(255,255,255,0.07); }
+.fi-ta:focus { border-color: var(--orange); background: rgba(255,255,255,0.07); box-shadow: 0 0 0 3px rgba(232,73,10,0.12); }
+
+.f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Chips */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 16px; border-radius: 10px;
+  border: 1.5px solid var(--w08);
+  background: rgba(255,255,255,0.04);
+  color: var(--w65); font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif;
+  cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.chip:hover { border-color: var(--w25); color: #fff; background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+.chip:active { transform: scale(0.96); }
+.chip.selected {
+  border-color: var(--orange); background: var(--orange-glow); color: #fff; font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(232,73,10,0.1);
+}
+.chip.selected .chip-dot { background: var(--orange); }
+.chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--w25); transition: background var(--transition-fast); flex-shrink: 0; }
+
+.urgency-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.urg-chip {
+  padding: 10px 22px; border-radius: 100px;
+  border: 1.5px solid var(--w08);
+  background: rgba(255,255,255,0.04);
+  color: var(--w65); font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+  cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.urg-chip:hover { border-color: var(--w25); color: #fff; transform: translateY(-1px); }
+.urg-chip:active { transform: scale(0.96); }
+.urg-chip.selected { border-color: var(--orange); background: var(--orange-glow); color: #fff; box-shadow: 0 0 0 3px rgba(232,73,10,0.1); }
+
+/* Submit button */
+.form-submit-btn {
+  width: 100%;
+  background: var(--orange); color: #fff;
+  font-size: 16px; font-weight: 700; padding: 16px;
+  border-radius: 12px; border: none; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 8px;
+  box-shadow: 0 4px 16px rgba(232,73,10,0.25);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative; overflow: hidden;
+}
+.form-submit-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0.1); opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+.form-submit-btn:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,73,10,0.35); }
+.form-submit-btn:hover::after { opacity: 1; }
+.form-submit-btn:active { transform: scale(0.98); box-shadow: 0 2px 8px rgba(232,73,10,0.2); }
+
+.form-note-small { font-size: 12px; color: var(--w25); text-align: center; margin-top: 10px; line-height: 1.5; }
+
+/* Right info panel */
+.info-panel {
+  background: var(--navy-card);
+  border: 1px solid var(--w08); border-radius: 20px; padding: 36px;
+  position: relative; overflow: hidden;
+  transition: border-color var(--transition-smooth);
+}
+.info-panel:hover { border-color: var(--w12); }
+.info-panel::before { content: ''; position: absolute; top: 0; left: 36px; right: 36px; height: 2px; background: var(--orange); border-radius: 0 0 2px 2px; }
+.info-steps { display: flex; flex-direction: column; gap: 22px; margin-top: 8px; }
+.info-step { display: flex; align-items: flex-start; gap: 14px; }
+.info-step-num {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--orange-glow); border: 1px solid var(--orange-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--orange);
+  flex-shrink: 0; margin-top: 2px;
+}
+.info-step-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.info-step-desc { font-size: 13px; color: var(--w45); line-height: 1.6; }
+.info-divider { border: none; border-top: 1px solid var(--w06); margin: 24px 0; }
+.info-note { font-size: 12px; color: var(--w25); line-height: 1.65; }
+
+/* Success state */
+.form-success-state { display: none; }
+.success-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange-glow); color: var(--orange);
+  border: 1px solid var(--orange-border);
+  padding: 8px 16px; border-radius: 100px;
+  font-size: 13px; font-weight: 700; margin-bottom: 20px;
+}
+.success-h { font-size: clamp(28px, 4vw, 46px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.08; color: #fff; margin-bottom: 14px; }
+.success-body { font-size: 16px; color: var(--w65); line-height: 1.75; max-width: 38ch; }
+
+/* ── HOW IT WORKS ── */
+.how-section { background: var(--navy-deep); }
+.steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 52px; }
+.step {
+  background: var(--navy-card); padding: 32px 26px;
+  transition: background var(--transition-smooth);
+}
+.step:first-child { border-radius: 16px 0 0 16px; }
+.step:last-child { border-radius: 0 16px 16px 0; }
+.step:hover { background: #212744; }
+.step-n { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); margin-bottom: 18px; }
+.step-ico {
+  width: 46px; height: 46px; border-radius: 12px;
+  background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.15);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+.step:hover .step-ico { transform: scale(1.08); box-shadow: 0 4px 16px rgba(232,73,10,0.2); }
+.step-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.step-desc { font-size: 13px; color: var(--w45); line-height: 1.65; }
+
+/* ── SERVICES ── */
+.services-section { background: var(--navy); }
+.services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 48px; }
+.svc-card {
+  background: var(--navy-card); border: 1px solid var(--w06);
+  border-radius: 14px; padding: 22px 18px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  transition: border-color var(--transition-smooth), transform var(--transition-smooth), background var(--transition-smooth), box-shadow var(--transition-smooth);
+  cursor: default;
+}
+.svc-card:hover { border-color: var(--orange-border); transform: translateY(-3px); background: #212744; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.svc-card-ico {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--orange-glow); border: 1px solid rgba(232,73,10,0.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform var(--transition-smooth);
+}
+.svc-card:hover .svc-card-ico { transform: scale(1.1); }
+.svc-card-name { font-size: 13px; font-weight: 700; color: var(--w65); transition: color var(--transition-fast); }
+.svc-card:hover .svc-card-name { color: #fff; }
+
+/* ── PROVIDER SECTION ── */
+.provider-section { background: var(--navy-deep); }
+.provider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; margin-top: 52px; }
+.perks { display: flex; flex-direction: column; gap: 18px; margin-top: 28px; }
+.perk { display: flex; align-items: flex-start; gap: 14px; }
+.perk-ico {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: var(--orange-glow); border: 1px solid var(--orange-border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.perk:hover .perk-ico { transform: scale(1.1); box-shadow: 0 4px 12px rgba(232,73,10,0.2); }
+.perk-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.perk-desc { font-size: 13px; color: var(--w45); line-height: 1.6; }
+
+/* Provider form */
+.ob-form {
+  background: var(--navy-card); border: 1px solid var(--w08);
+  border-radius: 20px; padding: 36px;
+  position: relative; overflow: hidden;
+  transition: border-color var(--transition-smooth);
+}
+.ob-form:hover { border-color: var(--w12); }
+.ob-form::before { content: ''; position: absolute; top: 0; left: 36px; right: 36px; height: 2px; background: var(--orange); border-radius: 0 0 2px 2px; }
+.ob-form-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 5px; }
+.ob-form-sub { font-size: 14px; color: var(--w45); margin-bottom: 24px; line-height: 1.6; }
+
+/* Checkboxes */
+.checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+.checkbox-label {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.04); border: 1.5px solid var(--w08);
+  border-radius: 10px; padding: 13px 16px;
+  cursor: pointer; color: var(--w65); font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.checkbox-label:hover { border-color: var(--w12); color: #fff; }
+.checkbox-label:has(input:checked) { border-color: var(--orange); color: #fff; background: var(--orange-glow); }
+.checkbox-label input[type=checkbox] { accent-color: var(--orange); width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Provider success */
+.ob-success { display: none; text-align: center; padding: 24px 0; }
+.ob-success-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--orange-glow); border: 2px solid var(--orange-border);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+}
+.ob-success-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 10px; }
+.ob-success-sub { font-size: 14px; color: var(--w65); line-height: 1.65; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy-deep);
+  border-top: 1px solid var(--w06);
+}
+.footer-contact {
+  padding: 52px 48px;
+  border-bottom: 1px solid var(--w06);
+}
+.footer-contact-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 24px;
+}
+.footer-contact-left {}
+.footer-contact-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 8px;
+}
+.footer-contact-heading { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; margin-bottom: 6px; }
+.footer-contact-sub { font-size: 14px; color: var(--w45); line-height: 1.6; }
+.footer-contact-right {}
+.footer-email-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--navy-card); border: 1px solid var(--w08);
+  border-radius: 12px; padding: 14px 22px;
+  color: #fff; text-decoration: none;
+  font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+.footer-email-link:hover { border-color: var(--orange-border); background: #212744; transform: translateY(-2px); }
+.footer-email-link:active { transform: scale(0.98); }
+.footer-email-icon {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--orange-glow); border: 1px solid var(--orange-border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.footer-main { padding: 48px 48px 36px; }
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+  margin-bottom: 40px;
+}
+.footer-brand {}
+.footer-brand-logo { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }
+.footer-tagline { font-size: 14px; color: var(--w45); line-height: 1.65; max-width: 240px; }
+.footer-coverage {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px;
+  font-size: 12px; color: var(--w25);
+  background: var(--w06); border: 1px solid var(--w06);
+  padding: 5px 12px; border-radius: 100px;
+}
+.footer-col-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--w25); margin-bottom: 16px;
+}
+.footer-col a {
+  display: block; font-size: 14px; color: var(--w45); text-decoration: none;
+  margin-bottom: 10px;
+  transition: color var(--transition-fast), padding-left var(--transition-fast);
+}
+.footer-col a:last-child { margin-bottom: 0; }
+.footer-col a:hover { color: #fff; padding-left: 4px; }
+.footer-bottom {
+  border-top: 1px solid var(--w06); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+}
+.footer-copy { font-size: 13px; color: var(--w25); }
+
+/* ── STICKY MOBILE CTA ── */
+.sticky-cta {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(15,18,36,1) 50%, rgba(15,18,36,0));
+  transition: opacity var(--transition-smooth);
+}
+.sticky-cta a {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  background: var(--orange); color: #fff;
+  font-size: 16px; font-weight: 700; padding: 16px;
+  border-radius: 12px; text-decoration: none; font-family: 'Inter', sans-serif;
+  box-shadow: 0 8px 32px rgba(232,73,10,0.35);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.sticky-cta a:hover { background: var(--orange-dark); }
+.sticky-cta a:active { background: var(--orange-dark); transform: scale(0.98); }
+
+/* ── ANIMATIONS ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .nav-hide { display: none; }
+  .hero { padding: 100px 20px 64px; }
+  .trust-strip { padding: 20px; }
+  .section { padding: 60px 20px; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .step:first-child { border-radius: 16px 0 0 0; }
+  .step:nth-child(2) { border-radius: 0 16px 0 0; }
+  .step:nth-child(3) { border-radius: 0 0 0 16px; }
+  .step:last-child { border-radius: 0 0 16px 0; }
+  .form-layout { grid-template-columns: 1fr; gap: 32px; }
+  .provider-grid { grid-template-columns: 1fr; gap: 36px; }
+  .footer-contact { padding: 40px 20px; }
+  .footer-contact-inner { flex-direction: column; gap: 20px; }
+  .footer-main { padding: 36px 20px 28px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-brand { grid-column: 1 / -1; }
+  .sticky-cta { display: block; }
+  body { padding-bottom: 80px; }
+}
+@media (max-width: 600px) {
+  .f2 { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .step { border-radius: 0 !important; }
+  .step:first-child { border-radius: 16px 16px 0 0 !important; }
+  .step:last-child { border-radius: 0 0 16px 16px !important; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .chip { font-size: 13px; padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <div class="nav-mark">AA</div>
+    <span class="nav-name">AutoAid</span>
+  </a>
+  <div class="nav-links">
+    <a href="#how" class="nav-link nav-hide">How it works</a>
+    <a href="#providers" class="nav-link nav-hide">Providers</a>
+    <a href="#request" class="nav-cta">Get help now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="hero-dot"></div> Now live in Western Sydney</div>
+    <h1 class="hero-h1">Help is<br>on the way.</h1>
+    <p class="hero-sub">Tell us what happened and AutoAid will connect you with an available local provider.</p>
+    <div class="hero-actions">
+      <a href="#request" class="btn-primary">
+        Get help now
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#providers" class="btn-outline">Become a provider</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      Fast local help
+    </div>
+    <div class="trust-item">
+      <div class="trust-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+      No membership required
+    </div>
+    <div class="trust-item">
+      <div class="trust-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+      Pay provider directly
+    </div>
+  </div>
+</div>
+
+<!-- REQUEST FORM -->
+<section class="form-section section" id="request">
+  <div class="section-inner">
+    <div class="eyebrow">Request help</div>
+    <h2 class="sh2">Tell us what happened.</h2>
+    <p class="ssub">Share your location, issue and contact details. We'll route your request to someone who can help.</p>
+    <div class="form-layout">
+      <div>
+        <div id="requestForm">
+          <div class="f2" style="margin-bottom:18px;">
+            <div class="fg" style="margin-bottom:0;"><label class="fl">Your name</label><input class="fi" type="text" placeholder="Full name" id="r-name" autocomplete="name"></div>
+            <div class="fg" style="margin-bottom:0;"><label class="fl">Phone number</label><input class="fi" type="tel" placeholder="04XX XXX XXX" id="r-phone" autocomplete="tel"></div>
+          </div>
+          <div class="fg"><label class="fl">Email <span class="fl-opt">(optional)</span></label><input class="fi" type="email" placeholder="you@email.com" id="r-email" autocomplete="email"></div>
+          <div class="fg"><label class="fl">Where are you?</label><input class="fi" type="text" placeholder="Suburb, street or nearby landmark" id="r-suburb" autocomplete="off"></div>
+          <div class="fg">
+            <label class="fl">What do you need?</label>
+            <div class="chip-group" id="serviceChips">
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Towing</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Flat battery</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Tyre issues</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Fuel delivery</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Lockout</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Mobile mechanic</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Car wash &amp; detailing</div>
+              <div class="chip" onclick="selectChip(this,'service')"><div class="chip-dot"></div>Not sure</div>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">How urgent is it?</label>
+            <div class="urgency-group" id="urgencyChips">
+              <div class="urg-chip" onclick="selectChip(this,'urgency')">ASAP</div>
+              <div class="urg-chip" onclick="selectChip(this,'urgency')">Today</div>
+              <div class="urg-chip" onclick="selectChip(this,'urgency')">Flexible</div>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Vehicle details <span class="fl-opt">(optional)</span></label><input class="fi" type="text" placeholder="ABC123 or Toyota Corolla 2018, white sedan" id="r-vehicle" autocomplete="off"></div>
+          <div class="fg"><label class="fl">Anything else we should know? <span class="fl-opt">(optional)</span></label><textarea class="fi-ta" placeholder="Flat battery at Westfield Parramatta car park." id="r-notes"></textarea></div>
+          <button class="form-submit-btn" onclick="submitRequest()">
+            Request help
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="form-note-small">A provider will be in touch shortly. No spam, no subscription.</div>
+        </div>
+        <div id="requestSuccess" class="form-success-state">
+          <div class="success-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Request received
+          </div>
+          <div class="success-h">We're finding you<br>someone now.</div>
+          <div class="success-body">A provider will contact you directly to confirm timing and pricing.</div>
+        </div>
+      </div>
+      <div class="info-panel">
+        <div class="eyebrow" style="margin-bottom:20px;">What happens next</div>
+        <div class="info-steps">
+          <div class="info-step">
+            <div class="info-step-num">1</div>
+            <div><div class="info-step-title">We route your request</div><div class="info-step-desc">AutoAid matches your job to available providers in your area right away.</div></div>
+          </div>
+          <div class="info-step">
+            <div class="info-step-num">2</div>
+            <div><div class="info-step-title">A provider contacts you</div><div class="info-step-desc">They'll call or text to confirm timing, price and next steps.</div></div>
+          </div>
+          <div class="info-step">
+            <div class="info-step-num">3</div>
+            <div><div class="info-step-title">Get back on the road</div><div class="info-step-desc">Pay the provider directly once the job is done.</div></div>
+          </div>
+        </div>
+        <hr class="info-divider">
+        <div class="info-note">AutoAid is a connection service. We match you with local providers but are not party to the job or payment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section section" id="how">
+  <div class="section-inner">
+    <div class="eyebrow">How it works</div>
+    <h2 class="sh2">From request to sorted.</h2>
+    <p class="ssub">No subscriptions, no hold music. Submit your request and AutoAid takes it from there.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">Step 01</div>
+        <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="step-title">Submit your request</div>
+        <div class="step-desc">Tell us where you are and what you need. Takes under a minute.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">Step 02</div>
+        <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="step-title">We find available help</div>
+        <div class="step-desc">AutoAid routes your request to suitable local providers in your area.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">Step 03</div>
+        <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div class="step-title">A provider contacts you</div>
+        <div class="step-desc">They confirm timing, price and next steps directly with you.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">Step 04</div>
+        <div class="step-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="step-title">Get back on the road</div>
+        <div class="step-desc">Pay the provider directly once the job is done.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section section" id="services">
+  <div class="section-inner">
+    <div class="eyebrow">Services</div>
+    <h2 class="sh2">Roadside help when you need it.</h2>
+    <div class="services-grid">
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="svc-card-name">Towing</div></div>
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><div class="svc-card-name">Flat battery</div></div>
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div><div class="svc-card-name">Tyre issues</div></div>
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><path d="M5 10a7 7 0 1 0 14 0"/><path d="M12 10v4"/><path d="M8 14h8"/></svg></div><div class="svc-card-name">Fuel delivery</div></div>
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="svc-card-name">Lockouts</div></div>
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div class="svc-card-name">Mobile mechanics</div></div>
+      <div class="svc-card"><div class="svc-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="svc-card-name">Car wash &amp; detailing</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROVIDER SECTION -->
+<section class="provider-section section" id="providers">
+  <div class="section-inner">
+    <div class="eyebrow">For providers</div>
+    <h2 class="sh2">Get more roadside jobs<br>in Western Sydney.</h2>
+    <div class="provider-grid">
+      <div>
+        <p class="ssub">AutoAid connects local providers with drivers who need help now.</p>
+        <div class="perks">
+          <div class="perk">
+            <div class="perk-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div><div class="perk-title">Choose which jobs to accept</div><div class="perk-desc">You're in control. Accept or decline any request, no pressure.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="perk-title">Receive local vehicle assistance requests</div><div class="perk-desc">Jobs matched to your suburb and service area only.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div><div class="perk-title">No fees during the pilot</div><div class="perk-desc">Free to join and receive jobs while we validate the platform.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div><div class="perk-title">Get paid directly by customers</div><div class="perk-desc">Your rate, your pocket. No platform cut during the pilot.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ob-form">
+        <div class="ob-form-title">Join the provider network.</div>
+        <div class="ob-form-sub">Receive local vehicle assistance requests across Western Sydney.</div>
+        <div id="providerFormFields">
+          <div class="f2" style="margin-bottom:18px;">
+            <div class="fg" style="margin-bottom:0;"><label class="fl">Full name</label><input class="fi" type="text" placeholder="Your name" id="p-name" autocomplete="name"></div>
+            <div class="fg" style="margin-bottom:0;"><label class="fl">Business name</label><input class="fi" type="text" placeholder="Your business name" id="p-biz" autocomplete="organization"></div>
+          </div>
+          <div class="f2" style="margin-bottom:18px;">
+            <div class="fg" style="margin-bottom:0;"><label class="fl">Phone number</label><input class="fi" type="tel" placeholder="04XX XXX XXX" id="p-phone" autocomplete="tel"></div>
+            <div class="fg" style="margin-bottom:0;"><label class="fl">Email address</label><input class="fi" type="email" placeholder="you@email.com" id="p-email" autocomplete="email"></div>
+          </div>
+          <div class="fg"><label class="fl">Areas serviced</label><input class="fi" type="text" placeholder="Parramatta, Blacktown, Penrith" id="p-areas" autocomplete="off"></div>
+          <div class="fg">
+            <label class="fl">Services offered</label>
+            <div class="chip-group" id="providerServiceChips">
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Towing</div>
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Battery</div>
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Tyres</div>
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Fuel delivery</div>
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Lockout</div>
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Mobile mechanic</div>
+              <div class="chip" onclick="selectChip(this,'pservice')"><div class="chip-dot"></div>Detailing</div>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">Do you have?</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label"><input type="checkbox" id="p-abn"> ABN registered</label>
+              <label class="checkbox-label"><input type="checkbox" id="p-insurance"> Public liability insurance</label>
+              <label class="checkbox-label"><input type="checkbox" id="p-licence"> Valid driver's licence</label>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Anything else? <span class="fl-opt">(optional)</span></label><textarea class="fi-ta" placeholder="Tell us about your business or operating hours." id="p-notes"></textarea></div>
+          <button class="form-submit-btn" onclick="submitProvider()">
+            Join provider network
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="form-note-small">We review every application and call you within 24 hours.</div>
+        </div>
+        <div class="ob-success" id="providerSuccess">
+          <div class="ob-success-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="ob-success-title">Application received.</div>
+          <div class="ob-success-sub">We'll be in touch shortly to get you set up.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <!-- CONTACT BAND -->
+  <div class="footer-contact">
+    <div class="footer-contact-inner">
+      <div class="footer-contact-left">
+        <div class="footer-contact-label">Contact AutoAid</div>
+        <div class="footer-contact-heading">Need help or have a question?</div>
+        <div class="footer-contact-sub">Currently servicing Western Sydney.</div>
+      </div>
+      <div class="footer-contact-right">
+        <a href="mailto:support@autoaid.com.au" class="footer-email-link">
+          <div class="footer-email-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8490A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          support@autoaid.com.au
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN FOOTER -->
+  <div class="footer-main">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-brand-logo">
+            <div class="nav-mark" style="pointer-events:none;">AA</div>
+            <span class="nav-name">AutoAid</span>
+          </div>
+          <div class="footer-tagline">Fast local help for drivers across Western Sydney.</div>
+          <div class="footer-coverage">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Western Sydney, NSW
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Services</div>
+          <div class="footer-col">
+            <a href="#services">Towing</a>
+            <a href="#services">Battery replacement</a>
+            <a href="#services">Tyre services</a>
+            <a href="#services">Fuel delivery</a>
+            <a href="#services">Lockouts</a>
+            <a href="#services">Mobile mechanics</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">AutoAid</div>
+          <div class="footer-col">
+            <a href="#how">How it works</a>
+            <a href="#providers">Join as provider</a>
+            <a href="#request">Get help now</a>
+            <a href="mailto:support@autoaid.com.au">Contact us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 AutoAid. All rights reserved.</div>
+        <div class="footer-copy">Built for Western Sydney.</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- STICKY MOBILE CTA -->
+<div class="sticky-cta" id="stickyCta">
+  <a href="#request">
+    Get help now
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</div>
+
+<script>
+  // ── NAV scroll behavior
+  var nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 40) { nav.classList.add('scrolled'); }
+    else { nav.classList.remove('scrolled'); }
+  }, { passive: true });
+
+  // ── Chip selection
+  function selectChip(el, group) {
+    if (group === 'urgency') {
+      document.querySelectorAll('#urgencyChips .urg-chip').forEach(function(c){ c.classList.remove('selected'); });
+      el.classList.add('selected');
+    } else if (group === 'pservice') {
+      el.classList.toggle('selected');
+    } else {
+      document.querySelectorAll('#serviceChips .chip').forEach(function(c){ c.classList.remove('selected'); });
+      el.classList.add('selected');
+    }
+  }
+
+  function getSelectedChips(containerId) {
+    return Array.from(document.querySelectorAll('#' + containerId + ' .chip.selected, #' + containerId + ' .urg-chip.selected'))
+      .map(function(el){ return el.textContent.trim(); });
+  }
+
+  // ── Submit request
+  function submitRequest() {
+    var name = document.getElementById('r-name').value.trim();
+    var phone = document.getElementById('r-phone').value.trim();
+    var suburb = document.getElementById('r-suburb').value.trim();
+    var service = getSelectedChips('serviceChips');
+    if (!name || !phone || !suburb) { alert('Please fill in your name, phone number and location.'); return; }
+    if (!service.length) { alert('Please select what you need.'); return; }
+
+    var formData = new FormData();
+    formData.append('Customer Name', name);
+    formData.append('Phone', phone);
+    formData.append('Email', document.getElementById('r-email').value.trim());
+    formData.append('Location', suburb);
+    formData.append('Service', service.join(', '));
+    formData.append('Urgency', getSelectedChips('urgencyChips').join(', ') || 'Not specified');
+    formData.append('Vehicle', document.getElementById('r-vehicle').value.trim());
+    formData.append('Notes', document.getElementById('r-notes').value.trim());
+    formData.append('_subject', 'New AutoAid Help Request - ' + service.join(', '));
+    formData.append('_replyto', document.getElementById('r-email').value.trim());
+
+    fetch('https://formspree.io/f/xpqbykky', {
+      method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
+    });
+
+    document.getElementById('requestForm').style.display = 'none';
+    var s = document.getElementById('requestSuccess');
+    s.style.display = 'block';
+    s.style.animation = 'fade-up 0.6s cubic-bezier(0.16,1,0.3,1) both';
+    document.getElementById('stickyCta').style.opacity = '0';
+    document.getElementById('stickyCta').style.pointerEvents = 'none';
+  }
+
+  // ── Submit provider
+  function submitProvider() {
+    var name = document.getElementById('p-name').value.trim();
+    var biz = document.getElementById('p-biz').value.trim();
+    var phone = document.getElementById('p-phone').value.trim();
+    var email = document.getElementById('p-email').value.trim();
+    var svcs = getSelectedChips('providerServiceChips');
+    if (!name || !biz || !phone || !email) { alert('Please fill in your name, business name, phone and email.'); return; }
+    if (!svcs.length) { alert('Please select at least one service you offer.'); return; }
+
+    var creds = [];
+    if (document.getElementById('p-abn').checked) creds.push('ABN');
+    if (document.getElementById('p-insurance').checked) creds.push('Insurance');
+    if (document.getElementById('p-licence').checked) creds.push('Licence');
+
+    var formData = new FormData();
+    formData.append('Full Name', name);
+    formData.append('Business Name', biz);
+    formData.append('Phone', phone);
+    formData.append('Email', email);
+    formData.append('Areas Serviced', document.getElementById('p-areas').value.trim());
+    formData.append('Services', svcs.join(', '));
+    formData.append('Credentials', creds.join(', ') || 'None indicated');
+    formData.append('Notes', document.getElementById('p-notes').value.trim());
+    formData.append('_subject', 'New AutoAid Provider Application - ' + biz);
+    formData.append('_replyto', email);
+
+    fetch('https://formspree.io/f/xnjwgllk', {
+      method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
+    }).then(showProviderSuccess).catch(showProviderSuccess);
+  }
+
+  function showProviderSuccess() {
+    document.getElementById('providerFormFields').style.display = 'none';
+    var s = document.getElementById('providerSuccess');
+    s.style.display = 'block';
+    s.style.animation = 'fade-up 0.6s cubic-bezier(0.16,1,0.3,1) both';
+  }
+
+  // ── Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var id = a.getAttribute('href');
+      if (id === '#') return;
+      var target = document.querySelector(id);
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+
+  // ── Sticky CTA: hide when request section is visible
+  var requestSection = document.getElementById('request');
+  var stickyCta = document.getElementById('stickyCta');
+  stickyCta.style.transition = 'opacity 0.3s cubic-bezier(0.16,1,0.3,1)';
+  var sectionObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      stickyCta.style.opacity = e.isIntersecting ? '0' : '1';
+      stickyCta.style.pointerEvents = e.isIntersecting ? 'none' : 'auto';
+    });
+  }, { threshold: 0.15 });
+  sectionObserver.observe(requestSection);
+
+  // ── Scroll reveal for steps and service cards
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.step, .svc-card').forEach(function(el, i) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(14px)';
+    el.style.transition = 'opacity 0.5s ' + (i * 0.07) + 's cubic-bezier(0.16,1,0.3,1), transform 0.5s ' + (i * 0.07) + 's cubic-bezier(0.16,1,0.3,1)';
+    revealObserver.observe(el);
+  });
+</script>
+</body>
+</html>
